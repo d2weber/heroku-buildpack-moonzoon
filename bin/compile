@@ -5,6 +5,7 @@ curl https://sh.rustup.rs -sSf > rustup.sh
 chmod u+x rustup.sh
 ./rustup.sh -y
 rm rustup.sh
+source $HOME/.cargo/env
 rustc -V
 
 echo "-----> Installing wasm-pack"
