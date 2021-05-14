@@ -20,7 +20,7 @@ wasm-pack -V
 cd $BUILD_DIR
 
 echo "-----> Installing MZoon"
-cargo install mzoon --git https://github.com/MoonZoon/MoonZoon --branch signals --root cargo_install_root --locked
+cargo install mzoon --git https://github.com/MoonZoon/MoonZoon --rev 599b855 --root cargo_install_root --locked
 
 echo "-----> Building app"
 cargo_install_root/bin/mzoon build -r
