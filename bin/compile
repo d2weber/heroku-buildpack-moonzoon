@@ -10,17 +10,10 @@ rm rustup.sh
 source $HOME/.cargo/env
 rustc -V
 
-echo "-----> Installing wasm-pack"
-curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf > wasm-pack.sh
-chmod u+x wasm-pack.sh
-./wasm-pack.sh -y
-rm wasm-pack.sh
-wasm-pack -V
-
 cd $BUILD_DIR
 
 echo "-----> Installing MZoon"
-cargo install mzoon --git https://github.com/MoonZoon/MoonZoon --rev 812dc62 --root cargo_install_root --locked
+cargo install mzoon --git https://github.com/MoonZoon/MoonZoon --rev $(<mzoon_commit) --root cargo_install_root --locked
 
 echo "-----> Building app"
 cargo_install_root/bin/mzoon build -r
