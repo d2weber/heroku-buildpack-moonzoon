@@ -3,6 +3,7 @@
 BUILD_DIR=${1:-}
 CACHE_DIR=${2:-}
 
+export RUSTUP_HOME="$CACHE_DIR/rustup"
 export CARGO_HOME="$CACHE_DIR/cargo"
 
 mkdir -p "$CACHE_DIR"
