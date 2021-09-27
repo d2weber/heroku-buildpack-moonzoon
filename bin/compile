@@ -1,19 +1,38 @@
 #!/bin/bash
 
 BUILD_DIR=${1:-}
+CACHE_DIR=${2:-}
 
-echo "-----> Installing Rust"
-curl https://sh.rustup.rs -sSf > rustup.sh
-chmod u+x rustup.sh
-./rustup.sh -y
-rm rustup.sh
-source $HOME/.cargo/env
-rustc -V
+mkdir -p "$CACHE_DIR"
+cd "$CACHE_DIR"
 
-cd $BUILD_DIR
+export RUSTUP_HOME="$CACHE_DIR/rustup"
+export CARGO_HOME="$CACHE_DIR/cargo"
+
+if [ -d "$CARGO_HOME" ]; then
+    echo "-----> Check for up-to-date Rust installation"
+    source "$CARGO_HOME/env"
+    rustup self update
+    rustup update stable
+else
+    echo "-----> Installing Rust"
+    curl https://sh.rustup.rs -sSf > rustup.sh
+    chmod u+x rustup.sh
+    ./rustup.sh -y --default-toolchain stable
+    rm rustup.sh
+    source "$CARGO_HOME/env"
+fi
+
+# Store all generated artifacts in cache dir
+export CARGO_TARGET_DIR="$CACHE_DIR/target"
 
 echo "-----> Installing MZoon"
-cargo install mzoon --git https://github.com/MoonZoon/MoonZoon --rev $(<mzoon_commit) --root cargo_install_root --locked
+cargo install mzoon --git https://github.com/MoonZoon/MoonZoon --rev $(<"$BUILD_DIR/mzoon_commit") --root "$CACHE_DIR/mzoon_install_root" --locked
+MZOON="$CACHE_DIR/mzoon_install_root/bin/mzoon"
+
+cd "$BUILD_DIR"
 
 echo "-----> Building app"
-cargo_install_root/bin/mzoon build -r
+"$MZOON" build -r
+mkdir -p target/release
+find "$CARGO_TARGET_DIR/release" -maxdepth 1 -type f -executable -exec cp -a -t target/release {} \;
