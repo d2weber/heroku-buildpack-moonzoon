@@ -9,19 +9,18 @@ mkdir -p "$CACHE_DIR"
 cd "$CACHE_DIR"
 
 if [ -d "$CARGO_HOME" ]; then
-    echo "-----> Check for up-to-date rust installation"
+    echo "-----> Check for up-to-date Rust installation"
     rustup self update
     rustup update stable
 else
     echo "-----> Installing Rust"
     curl https://sh.rustup.rs -sSf > rustup.sh
     chmod u+x rustup.sh
-    ./rustup.sh -y
+    ./rustup.sh -y --default-toolchain stable
     rm rustup.sh
-    rustc -V
 fi
 
-#source $HOME/.cargo/env
+source "$CARGO_HOME/env"
 
 echo "-----> Installing MZoon"
 cargo install mzoon --git https://github.com/MoonZoon/MoonZoon --rev $(<mzoon_commit) --root "$CACHE_DIR/mzoon_install_root" --locked
