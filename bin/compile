@@ -1,19 +1,39 @@
 #!/bin/bash
 
 BUILD_DIR=${1:-}
+CACHE_DIR=${2:-}
 
-echo "-----> Installing Rust"
-curl https://sh.rustup.rs -sSf > rustup.sh
-chmod u+x rustup.sh
-./rustup.sh -y
-rm rustup.sh
-source $HOME/.cargo/env
-rustc -V
+export CARGO_HOME="$CACHE_DIR/cargo"
+
+mkdir -p "$CACHE_DIR"
+cd "$CACHE_DIR"
+
+if [ -d "$CARGO_HOME" ]; then
+    echo "-----> Check for up-to-date rust installation"
+    rustup self update
+    rustup update stable
+else
+    echo "-----> Installing Rust"
+    curl https://sh.rustup.rs -sSf > rustup.sh
+    chmod u+x rustup.sh
+    ./rustup.sh -y
+    rm rustup.sh
+    rustc -V
+fi
+
+#source $HOME/.cargo/env
+
+echo "-----> Installing MZoon"
+cargo install mzoon --git https://github.com/MoonZoon/MoonZoon --rev $(<mzoon_commit) --root "$CACHE_DIR/mzoon_install_root" --locked
+
+MZOON = "$CACHE_DIR/mzoon_install_root/bin/mzoon"
+if [ ! -x "$MZOON" ]; then
+  echo "Installing mzoon failed"
+  exit 1
+fi
+
 
 cd $BUILD_DIR
 
-echo "-----> Installing MZoon"
-cargo install mzoon --git https://github.com/MoonZoon/MoonZoon --rev $(<mzoon_commit) --root cargo_install_root --locked
-
 echo "-----> Building app"
-cargo_install_root/bin/mzoon build -r
+mzoon_install_root/bin/mzoon build -r
