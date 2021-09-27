@@ -26,7 +26,7 @@ fi
 source "$CARGO_HOME/env"
 
 echo "-----> Installing MZoon"
-cargo install mzoon --git https://github.com/MoonZoon/MoonZoon --rev $(<mzoon_commit) --root "$CACHE_DIR/mzoon_install_root" --locked
+cargo install mzoon --git https://github.com/MoonZoon/MoonZoon --rev $(<"$BUILD_DIR/mzoon_commit") --root "$CACHE_DIR/mzoon_install_root" --locked
 
 MZOON = "$CACHE_DIR/mzoon_install_root/bin/mzoon"
 if [ ! -x "$MZOON" ]; then
