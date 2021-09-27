@@ -17,6 +17,8 @@ else
     echo "-----> Installing Rust"
     curl https://sh.rustup.rs -sSf > rustup.sh
     chmod u+x rustup.sh
+    echo "RUSTUP_HOME: $RUSTUP_HOME"
+    echo "CARGO_HOME: $CARGO_HOME"
     ./rustup.sh -y --default-toolchain stable
     rm rustup.sh
 fi
